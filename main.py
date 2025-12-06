@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate("pizzabestellapp-c93b5-firebase-adminsdk-fbsvc-c6c715fabd.json")
+    cred = credentials.Certificate("pizza-app-dd667-firebase-adminsdk-fbsvc-84ec5cecdb.json")
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
