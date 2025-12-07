@@ -83,6 +83,8 @@ body{
     overflow: hidden;
 }
 
+/*index*/
+
 .hero{
     position: relative;
 
@@ -103,4 +105,23 @@ body{
     letter-spacing: 5px;
     text-transform: uppercase;
     color: #ffffff;
+}
+
+/*restaurants*/
+
+.restaurants{
+    height: 100%;
+    padding-top: 20px;
+
+    background-color: #6284bb;
+    color: #ffffff;
+    text-align: center;
+}
+
+.restaurants-menu{
+    display: grid;
+    padding: 10px 20px;
+
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-gap: 20px;
 }
