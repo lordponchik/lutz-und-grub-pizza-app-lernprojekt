@@ -17,6 +17,19 @@ app = FastAPI()
 async def root():
     return FileResponse("public/index.html")
 
+@app.get("/api/restaurants")
+async def zeig_restaurants():
+    docs = db.collection("restaurants").stream()
+
+    restaurants = []
+    
+    for doc in docs:
+        item = doc.to_dict()
+        item["id"] = doc.id
+        restaurants.append(item)
+
+    return {"restaurants": restaurants}
+
 app.mount("/", StaticFiles(directory="public"), name="static")
 
 if __name__ == "__main__":
