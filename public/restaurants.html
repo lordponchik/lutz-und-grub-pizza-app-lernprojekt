@@ -22,41 +22,33 @@
         <main class="main">
             <section class="restaurants">
                 <h1>Restaurants</h1>
-
-                <ul class="restaurants-menu">
-                    <li class="restaurants-menu__element">
-                        <a href="" class="restaurants-menu__link">
-                            <img src="./bilder/restaurant.svg" alt="" width="300px">
-                            <div>
-                                <h2>Name</h2>
-                                <p>kategorie</p>
-                                <p>ort</p>
-                            </div>
-                        </a>
-                    </li>
-                                        <li class="restaurants-menu__element">
-                        <a href="" class="restaurants-menu__link">
-                            <img src="./bilder/restaurant.svg" alt="" width="300px">
-                            <div>
-                                <h2>Name</h2>
-                                <p>kategorie</p>
-                                <p>ort</p>
-                            </div>
-                        </a>
-                    </li>
-                                        <li class="restaurants-menu__element">
-                        <a href="" class="restaurants-menu__link">
-                            <img src="./bilder/restaurant.svg" alt="" width="300px">
-                            <div>
-                                <h2>Name</h2>
-                                <p>kategorie</p>
-                                <p>ort</p>
-                            </div>
-                        </a>
-                    </li>
+                <ul class="restaurants-menu" id="restaurants">
                 </ul>
             </section>
         </main>
     </div>
+    <script>
+        const restaurantEl = document.querySelector("#restaurants");
+        
+        document.addEventListener("DOMContentLoaded", LadeRestaurants)
+
+        async function LadeRestaurants() {
+            response = await fetch("/api/restaurants");
+            data = await response.json();
+
+            restaurantEl.innerHTML = data.restaurants.map(({Name, Kategorie, Standort}) => {
+                return `<li class="restaurants-menu__element">
+                        <a href="" class="restaurants-menu__link">
+                            <img src="./bilder/restaurant.png" alt="" width="300px">
+                            <div>
+                                <h2>${Name}</h2>
+                                <p>${Kategorie}</p>
+                                <p>${Standort}</p>
+                            </div>
+                        </a>
+                    </li>`
+            }).join("");
+        }
+    </script>
 </body>
 </html>

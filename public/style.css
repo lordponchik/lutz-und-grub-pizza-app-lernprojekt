@@ -83,8 +83,6 @@ body{
     overflow: hidden;
 }
 
-/*index*/
-
 .hero{
     position: relative;
 
@@ -107,9 +105,8 @@ body{
     color: #ffffff;
 }
 
-/*restaurants*/
-
 .restaurants{
+    overflow-y: scroll;
     height: 100%;
     padding-top: 20px;
 
