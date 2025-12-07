@@ -9,9 +9,13 @@ ul{
 }
 
 img{
+    margin: 0 auto;
     display: block;
     max-width: 100%;
     height: auto;
+}
+a{
+    text-decoration: none;
 }
 
 body{
@@ -64,7 +68,6 @@ body{
     display: inline-block;
     font-size: 3vh;
     color: inherit;
-    text-decoration: none;
 
     transition: all 300ms ease-in;
 }
@@ -118,7 +121,38 @@ body{
 .restaurants-menu{
     display: grid;
     padding: 10px 20px;
-
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     grid-gap: 20px;
+}
+
+.restaurant__link:hover .restaurant__bild,
+.restaurant__link:focus .restaurant__bild{
+    filter: drop-shadow(2px 4px 6px #234485);
+}
+
+.restaurant__link:hover .restaurant-meta,
+.restaurant__link:focus .restaurant-meta{
+    transform: scale(1.05);
+}
+
+.restaurant__bild{
+    transition: all 500ms cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+.restaurant-meta{
+    display: grid;
+    grid-template-rows: 15% 40% auto;
+    height: 150px;
+
+    color: #FDFEE8;
+
+    transition: all 500ms cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+.restaurant__titel{
+    align-self: center;
+
+    font-size: 3.5vh;
+}
+.restaurant__kategorie{
+    font-style: italic;
 }

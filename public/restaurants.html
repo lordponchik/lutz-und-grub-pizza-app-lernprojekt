@@ -36,14 +36,14 @@
             response = await fetch("/api/restaurants");
             data = await response.json();
 
-            restaurantEl.innerHTML = data.restaurants.map(({Name, Kategorie, Standort}) => {
-                return `<li class="restaurants-menu__element">
-                        <a href="" class="restaurants-menu__link">
-                            <img src="./bilder/restaurant.png" alt="" width="300px">
-                            <div>
-                                <h2>${Name}</h2>
-                                <p>${Kategorie}</p>
-                                <p>${Standort}</p>
+            restaurantEl.innerHTML = data.restaurants.map(({Name, Kategorie, Standort, RestaurantID}) => {
+                return `<li class="restaurant">
+                        <a href="speisekarte.html?id=${RestaurantID}" class="restaurant__link">
+                            <img src="./bilder/restaurant.png" alt="restaurant" width="200px" class="restaurant__bild">
+                            <div class="restaurant-meta">
+                                <p class="restaurant__kategorie">${Kategorie}</p>
+                                <h2 class="restaurant__titel">${Name}</h2>
+                                <p class="restaurant__standort">${Standort}</p>
                             </div>
                         </a>
                     </li>`
