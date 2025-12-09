@@ -30,6 +30,19 @@ async def zeig_restaurants():
 
     return {"restaurants": restaurants}
 
+@app.get("/api/restaurants/{restaurant_id}/speisekarte")
+async def zeig_restaurants_speisekarte(restaurant_id):
+    docs = db.collection("restaurants").document(restaurant_id).collection("speisekarte").stream()
+
+    speisekarte = []
+    
+    for doc in docs:
+        item = doc.to_dict()
+        item["id"] = doc.id
+        speisekarte.append(item)
+
+    return {"speisekarte": speisekarte}
+
 app.mount("/", StaticFiles(directory="public"), name="static")
 
 if __name__ == "__main__":
