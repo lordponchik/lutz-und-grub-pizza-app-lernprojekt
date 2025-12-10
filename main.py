@@ -43,6 +43,16 @@ async def zeig_restaurants_speisekarte(restaurant_id):
 
     return {"speisekarte": speisekarte}
 
+@app.get("/api/restaurants/{restaurant_id}/speisekarte/{product_id}")
+async def get_single_menu_item(restaurant_id: str, product_id: str):
+
+    item = db.collection("restaurants").document(restaurant_id).collection("menuItems").document(product_id).get()
+
+    product = item.to_dict()
+    product["id"] = product.id
+        
+    return {"product": product}
+
 app.mount("/", StaticFiles(directory="public"), name="static")
 
 if __name__ == "__main__":
