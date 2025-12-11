@@ -14,7 +14,7 @@
             <ul class="site-nav">
                 <li class="site-nav__element"><a href="index.html" class="site-nav__link">Home</a></li>
                 <li class="site-nav__element"><a href="restaurants.html" class="site-nav__link">Restaurants</a></li>
-                <li class="site-nav__element"><a href="warenkorb.html" class="site-nav__link">Warenkorb</a></li>
+                <li class="site-nav__element warenAnzahl__element"><a href="warenkorb.html" class="site-nav__link">Warenkorb</a><span class="warenAnzahl"></span></li>
                 <li class="site-nav__element"><a href="impressum.html" class="site-nav__link">Impressum</a></li>
             </ul>
             </nav>
@@ -27,17 +27,63 @@
             </section>
         </main>
     </div>
+    <script src="./scripts/warenkorb.js"></script>
     <script>
+       // const warenAnzahlElement = document.querySelector(".warenAnzahl");
         const speisekarteElement = document.querySelector("#speisekarte");
-
-        const restaurantID = new URLSearchParams(window.location.search).get("id")
+        const urlParams = new URLSearchParams(window.location.search)
+        const restaurantID = urlParams.get("id");
+        const restaurantStadt = urlParams.get("stadt");
 
         document.addEventListener("DOMContentLoaded", ()=>LadeSpeisekarte(restaurantID))
+
+        async function LadeSpeise(e) {
+            e.preventDefault();
+
+            const productID = e.currentTarget.dataset.id;
+
+            const response =  await fetch(`/api/restaurants/${restaurantID}/speisekarte/${productID}`);
+            const data =  await response.json();
+            const product = {
+                ...data.product,
+                menge: 1
+            };
+
+            const warenkorb = JSON.parse(localStorage.getItem("warenkorb"));
+
+            if(!warenkorb){
+                localStorage.setItem("warenkorb", JSON.stringify({
+                [restaurantStadt]: [product]})
+                );
+
+                warenAnzahlElement.innerHTML = 1;
+            }
+            else if(!warenkorb[restaurantStadt]) console.log("andere Stadt");
+            else {
+                const ware = warenkorb[restaurantStadt].find(ware => {
+                    return ware.id === product.id;
+                })
+
+                if(!ware) {
+                    console.log(warenkorb[restaurantStadt]);
+                    warenkorb[restaurantStadt].push(product);
+                    localStorage.setItem("warenkorb", JSON.stringify({
+                    [restaurantStadt]: warenkorb[restaurantStadt]
+                    }));
+
+                    warenAnzahlElement.innerHTML = warenkorb[restaurantStadt].length;
+                }else {
+                    ware.menge++;
+                    localStorage.setItem("warenkorb", JSON.stringify({
+                    [restaurantStadt]: warenkorb[restaurantStadt]
+                    }));
+                };
+            }
+        }
 
         async function LadeSpeisekarte(restaurantID) {
             const response = await fetch(`/api/restaurants/${restaurantID}/speisekarte`);
             const data = await response.json();
-            
 
             speisekarteElement.innerHTML = data.speisekarte.map(({name, preis, id})=>{
                 let preisInString = preis.toString();
@@ -59,15 +105,7 @@
 
             const kaufBtnElements = document.querySelectorAll(".kaufBtn");
 
-            kaufBtnElements.forEach(el=>el.addEventListener("click", (e)=>{
-                e.preventDefault();
-
-                const productID = e.currentTarget.dataset.id;
-                const response =  fetch(`/api/restaurants/${restaurantID}/speisekarte/${productID}`);
-                const data =  response.json();
-
-                console.log(data.product);
-            }));
+            kaufBtnElements.forEach(el=>el.addEventListener("click", LadeSpeise));
         }
     </script>
 </body>

@@ -14,7 +14,7 @@
             <ul class="site-nav">
                 <li class="site-nav__element"><a href="index.html" class="site-nav__link">Home</a></li>
                 <li class="site-nav__element"><a href="restaurants.html" class="site-nav__link">Restaurants</a></li>
-                <li class="site-nav__element"><a href="warenkorb.html" class="site-nav__link">Warenkorb</a></li>
+                <li class="site-nav__element warenAnzahl__element"><a href="warenkorb.html" class="site-nav__link">Warenkorb</a><span class="warenAnzahl"></span></li>
                 <li class="site-nav__element"><a href="impressum.html" class="site-nav__link">Impressum</a></li>
             </ul>
             </nav>
@@ -27,6 +27,7 @@
             </section>
         </main>
     </div>
+    <script src="./scripts/warenkorb.js"></script>
     <script>
         const restaurantEl = document.querySelector("#restaurants");
         
@@ -37,13 +38,16 @@
             const data = await response.json();
 
             restaurantEl.innerHTML = data.restaurants.map(({Name, Kategorie, Standort, id}) => {
+                const {Strasse, Hausnummer, Postleitzahl, Stadt} = Standort;
+                const adresse = `${Strasse} ${Hausnummer}, ${Postleitzahl} ${Stadt}`;
+
                 return `<li class="restaurant">
-                        <a href="speisekarte.html?id=${id}" class="restaurant__link">
+                        <a href="speisekarte.html?id=${id}&stadt=${Stadt}" class="restaurant__link">
                             <img src="./bilder/restaurant.png" alt="restaurant" width="200px" class="restaurant__bild">
                             <div class="restaurant-meta">
                                 <p class="restaurant__kategorie">${Kategorie}</p>
                                 <h2 class="restaurant__titel">${Name}</h2>
-                                <p class="restaurant__standort">${Standort}</p>
+                                <p class="restaurant__standort">${adresse}</p>
                             </div>
                         </a>
                     </li>`

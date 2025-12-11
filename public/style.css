@@ -149,7 +149,7 @@ body{
 .restaurant__titel{
     align-self: center;
 
-    font-size: 1.5vw;
+    font-size: 20px;
 
     transition: all 500ms cubic-bezier(0.39, 0.575, 0.565, 1);
 }
@@ -222,7 +222,7 @@ body{
 .speise__titel{
     align-self: center;
 
-    font-size: 1.5vw;
+    font-size: 20px;
 
     transition: all 500ms cubic-bezier(0.39, 0.575, 0.565, 1);
 }
@@ -232,7 +232,7 @@ body{
     align-items: center;
 }
 .speise__preis{
-    font-size: 2vw;
+    font-size: 25px;
     font-style: italic;
 }
 .speise__kaufbtn{
@@ -246,4 +246,18 @@ body{
 .speise__kaufbtn:hover,
 .speise__kaufbtn:focus{
     border-radius: 50%;
+}
+.warenAnzahl__element{
+    position: relative;
+}
+.warenAnzahl{
+    position: absolute;
+    right: -20px;
+    height: fit-content;
+    display: block;
+    top: 50%;
+    bottom: 50%;
+    transform: translateY(-50%);
+    font-size: 3vh;
+    color: #df3636;
 }
