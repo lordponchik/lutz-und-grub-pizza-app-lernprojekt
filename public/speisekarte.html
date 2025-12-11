@@ -34,14 +34,12 @@
 
         document.addEventListener("DOMContentLoaded", ()=>LadeSpeisekarte(restaurantID))
 
-
-
         async function LadeSpeisekarte(restaurantID) {
             const response = await fetch(`/api/restaurants/${restaurantID}/speisekarte`);
             const data = await response.json();
             
 
-            speisekarteElement.innerHTML = data.speisekarte.map(({name, preis})=>{
+            speisekarteElement.innerHTML = data.speisekarte.map(({name, preis, id})=>{
                 let preisInString = preis.toString();
                 let ausgegebenerPreis = preisInString.split(".")[1].length == 1 ? `${preisInString}0` : preisInString;
                
@@ -52,12 +50,24 @@
                                 <h2 class="speise__titel">${name}</h2>
                                 <div class="speise__warenkorb">
                                 <p class="speise__preis">${ausgegebenerPreis}€</p>
-                                <button type="button" class="speise__kaufbtn">🛒</button>
+                                                              <button type="button" class="speise__kaufbtn kaufBtn" data-id="${id}">🛒</button>
                                 </div>
                             </div>
                         </a>
                     </li>`
             }).join(""); 
+
+            const kaufBtnElements = document.querySelectorAll(".kaufBtn");
+
+            kaufBtnElements.forEach(el=>el.addEventListener("click", (e)=>{
+                e.preventDefault();
+
+                const productID = e.currentTarget.dataset.id;
+                const response =  fetch(`/api/restaurants/${restaurantID}/speisekarte/${productID}`);
+                const data =  response.json();
+
+                console.log(data.product);
+            }));
         }
     </script>
 </body>
