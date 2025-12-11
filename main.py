@@ -46,10 +46,13 @@ async def zeig_restaurants_speisekarte(restaurant_id):
 @app.get("/api/restaurants/{restaurant_id}/speisekarte/{product_id}")
 async def get_single_menu_item(restaurant_id: str, product_id: str):
 
-    item = db.collection("restaurants").document(restaurant_id).collection("menuItems").document(product_id).get()
+    restaurant = db.collection("restaurants").document(restaurant_id)
+        
+    productRef = restaurant.collection("speisekarte").document(product_id)
+    productDoc = productRef.get()
 
-    product = item.to_dict()
-    product["id"] = product.id
+    product = productDoc.to_dict()
+    product["id"] = productDoc.id
         
     return {"product": product}
 
