@@ -25,15 +25,20 @@
                 <ul class="speisekarte-menu" id="speisekarte">
                 </ul>
             </section>
+            <section class="hinweis">
+                <ul class="hinweis-menu">
+                </ul>
+            </section>
         </main>
     </div>
     <script src="./scripts/warenkorb.js"></script>
     <script>
-       // const warenAnzahlElement = document.querySelector(".warenAnzahl");
+        const hinweisElement = document.querySelector(".hinweis-menu");
         const speisekarteElement = document.querySelector("#speisekarte");
         const urlParams = new URLSearchParams(window.location.search)
         const restaurantID = urlParams.get("id");
         const restaurantStadt = urlParams.get("stadt");
+        let nachrichten = [];
 
         document.addEventListener("DOMContentLoaded", ()=>LadeSpeisekarte(restaurantID))
 
@@ -48,7 +53,7 @@
                 ...data.product,
                 menge: 1
             };
-
+            
             const warenkorb = JSON.parse(localStorage.getItem("warenkorb"));
 
             if(!warenkorb){
@@ -57,8 +62,25 @@
                 );
 
                 warenAnzahlElement.innerHTML = 1;
+                nachrichten.push(`<li class="hinweis-menu__element success">
+                      <p>Die Speise "${product.name}" wurde dem Warenkorb hinzugefügt.</p>
+                    </li>`)
+                hinweisElement.innerHTML = nachrichten.join("");
+                setTimeout(()=>{
+                    nachrichten.shift();
+                    hinweisElement.innerHTML = nachrichten.join("");
+                }, 3000);
             }
-            else if(!warenkorb[restaurantStadt]) console.log("andere Stadt");
+            else if(!warenkorb[restaurantStadt]) {
+                nachrichten.push(`<li class="hinweis-menu__element alert">
+                      <p>Die Lieferung ist nur innerhalb der ausgewählten Stadt möglich.</p>
+                    </li>`)
+                    hinweisElement.innerHTML = nachrichten.join("");
+                    setTimeout(()=>{
+                        nachrichten.shift();
+                        hinweisElement.innerHTML = nachrichten.join("");
+                    }, 3000);
+            }
             else {
                 const ware = warenkorb[restaurantStadt].find(ware => {
                     return ware.id === product.id;
@@ -70,13 +92,28 @@
                     localStorage.setItem("warenkorb", JSON.stringify({
                     [restaurantStadt]: warenkorb[restaurantStadt]
                     }));
-
                     warenAnzahlElement.innerHTML = warenkorb[restaurantStadt].length;
+                    nachrichten.push(`<li class="hinweis-menu__element success">
+                      <p>Die Speise "${product.name}" wurde dem Warenkorb hinzugefügt.</p>
+                    </li>`)
+                    hinweisElement.innerHTML = nachrichten.join("");
+                    setTimeout(()=>{
+                        nachrichten.shift();
+                        hinweisElement.innerHTML = nachrichten.join("");
+                    }, 3000);
                 }else {
                     ware.menge++;
                     localStorage.setItem("warenkorb", JSON.stringify({
                     [restaurantStadt]: warenkorb[restaurantStadt]
                     }));
+                    nachrichten.push(`<li class="hinweis-menu__element success">
+                      <p>Die Speise ${product.name} befindet sich bereits im Warenkorb. +1 zur Menge.</p>
+                    </li>`)
+                    hinweisElement.innerHTML = nachrichten.join("");
+                    setTimeout(()=>{
+                        nachrichten.shift();
+                        hinweisElement.innerHTML = nachrichten.join("");
+                    }, 3000);
                 };
             }
         }
@@ -87,7 +124,13 @@
 
             speisekarteElement.innerHTML = data.speisekarte.map(({name, preis, id})=>{
                 let preisInString = preis.toString();
-                let ausgegebenerPreis = preisInString.split(".")[1].length == 1 ? `${preisInString}0` : preisInString;
+                let ausgegebenerPreis = "";
+                if (Number.isInteger(preis)) {
+                    ausgegebenerPreis = `${preis}.00`;
+                } else {
+                let [ganz, dezimal] = preis.toString().split(".");
+                ausgegebenerPreis = dezimal.length === 1 ? `${ganz}.${dezimal}0` : preis.toString();
+                }
                
                 return `<li class="speise">
                         <a href="" class="speise__link">
@@ -103,9 +146,11 @@
                     </li>`
             }).join(""); 
 
-            const kaufBtnElements = document.querySelectorAll(".kaufBtn");
 
-            kaufBtnElements.forEach(el=>el.addEventListener("click", LadeSpeise));
+            document.querySelectorAll('.speise__link').forEach(link => {
+            link.addEventListener('click', (e) => e.preventDefault());
+            });
+            document.querySelectorAll(".kaufBtn").forEach(el=>el.addEventListener("click", LadeSpeise));
         }
     </script>
 </body>
