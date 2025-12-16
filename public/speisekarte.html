@@ -43,8 +43,6 @@
         document.addEventListener("DOMContentLoaded", ()=>LadeSpeisekarte(restaurantID))
 
         async function LadeSpeise(e) {
-            e.preventDefault();
-
             const productID = e.currentTarget.dataset.id;
 
             const response =  await fetch(`/api/restaurants/${restaurantID}/speisekarte/${productID}`);
@@ -62,24 +60,10 @@
                 );
 
                 warenAnzahlElement.innerHTML = 1;
-                nachrichten.push(`<li class="hinweis-menu__element success">
-                      <p>Die Speise "${product.name}" wurde dem Warenkorb hinzugefügt.</p>
-                    </li>`)
-                hinweisElement.innerHTML = nachrichten.join("");
-                setTimeout(()=>{
-                    nachrichten.shift();
-                    hinweisElement.innerHTML = nachrichten.join("");
-                }, 3000);
+                ZeigeNachricht(`Die Speise "${product.name}" wurde dem Warenkorb hinzugefügt.`);
             }
             else if(!warenkorb[restaurantStadt]) {
-                nachrichten.push(`<li class="hinweis-menu__element alert">
-                      <p>Die Lieferung ist nur innerhalb der ausgewählten Stadt möglich.</p>
-                    </li>`)
-                    hinweisElement.innerHTML = nachrichten.join("");
-                    setTimeout(()=>{
-                        nachrichten.shift();
-                        hinweisElement.innerHTML = nachrichten.join("");
-                    }, 3000);
+                ZeigeNachricht(`Die Lieferung ist nur innerhalb der ausgewählten Stadt möglich.`, "alert");
             }
             else {
                 const ware = warenkorb[restaurantStadt].find(ware => {
@@ -93,27 +77,13 @@
                     [restaurantStadt]: warenkorb[restaurantStadt]
                     }));
                     warenAnzahlElement.innerHTML = warenkorb[restaurantStadt].length;
-                    nachrichten.push(`<li class="hinweis-menu__element success">
-                      <p>Die Speise "${product.name}" wurde dem Warenkorb hinzugefügt.</p>
-                    </li>`)
-                    hinweisElement.innerHTML = nachrichten.join("");
-                    setTimeout(()=>{
-                        nachrichten.shift();
-                        hinweisElement.innerHTML = nachrichten.join("");
-                    }, 3000);
+                    ZeigeNachricht(`Die Speise "${product.name}" wurde dem Warenkorb hinzugefügt.`);
                 }else {
                     ware.menge++;
                     localStorage.setItem("warenkorb", JSON.stringify({
                     [restaurantStadt]: warenkorb[restaurantStadt]
                     }));
-                    nachrichten.push(`<li class="hinweis-menu__element success">
-                      <p>Die Speise ${product.name} befindet sich bereits im Warenkorb. +1 zur Menge.</p>
-                    </li>`)
-                    hinweisElement.innerHTML = nachrichten.join("");
-                    setTimeout(()=>{
-                        nachrichten.shift();
-                        hinweisElement.innerHTML = nachrichten.join("");
-                    }, 3000);
+                    ZeigeNachricht(`Die Speise ${product.name} befindet sich bereits im Warenkorb. +1 zur Menge.`);
                 };
             }
         }
@@ -139,7 +109,7 @@
                                 <h2 class="speise__titel">${name}</h2>
                                 <div class="speise__warenkorb">
                                 <p class="speise__preis">${ausgegebenerPreis}€</p>
-                                                              <button type="button" class="speise__kaufbtn kaufBtn" data-id="${id}">🛒</button>
+                                <button type="button" class="speise__kaufbtn kaufBtn" data-id="${id}">🛒</button>
                                 </div>
                             </div>
                         </a>
@@ -151,6 +121,28 @@
             link.addEventListener('click', (e) => e.preventDefault());
             });
             document.querySelectorAll(".kaufBtn").forEach(el=>el.addEventListener("click", LadeSpeise));
+        }
+    
+    
+        function ZeigeNachricht(nachricht, type="success"){
+            const id = Date.now();
+            const hinweise = {
+                id,
+                html: `<li class="hinweis-menu__element ${type}" data-id="${id}">
+                 <p>${nachricht}</p>
+               </li>`
+            };
+
+            nachrichten.push(hinweise);
+            hinweisElement.innerHTML = nachrichten.map(el => el.html).join("");
+
+            setTimeout(()=>{
+                entferneNachricht(id);
+            }, 3000);
+        }
+        function entferneNachricht(id){
+            nachrichten = nachrichten.filter(el=>el.id!=id);
+            hinweisElement.innerHTML = nachrichten.map(el=>el.html).join("");
         }
     </script>
 </body>
