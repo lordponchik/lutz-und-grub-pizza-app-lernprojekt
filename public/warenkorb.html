@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+         <header class="header">
+            <nav class="nav">
+            <div class="logo"><img src="bilder/logo.png" alt="logo"></div>
+            <ul class="site-nav">
+                <li class="site-nav__element"><a href="index.html" class="site-nav__link">Home</a></li>
+                <li class="site-nav__element"><a href="restaurants.html" class="site-nav__link">Restaurants</a></li>
+                <li class="site-nav__element warenAnzahl__element"><a href="warenkorb.html" class="site-nav__link">Warenkorb</a><span class="warenAnzahl"></span></li>
+                <li class="site-nav__element"><a href="impressum.html" class="site-nav__link">Impressum</a></li>
+            </ul>
+            </nav>
+        </header>
+        <main class="main">
+            <section class="warenkorb">
+                <h1 class="warenkorb__titel">Warenkorb</h1>
+                <div class="warenkorb__container" id="warenkorb-container"></div>
+            </section>
+        </main>
+    </div>
+    <script src="./scripts/warenkorb.js"></script>
+    <script>
+        const warenkorbContainerElement = document.querySelector("#warenkorb-container");
+
+        const warenkorbLocal = JSON.parse(localStorage.getItem("warenkorb"));
+
+        if(!warenkorbLocal){
+            warenkorbContainerElement.innerHTML = "<p>Ihr Warenkorb ist derzeit leer. </br>Geben Sie jetzt Ihre erste Bestellung auf.</p>";
+        }else{
+           warenkorbContainerElement.innerHTML = `<ul class="warenkorb-menu">
+            ${warenkorb[Object.keys(warenkorb)[0]].map(({name, menge, preis})=> {
+                return `
+                    <li class="warenkorb-item">
+                        <div class="warenkorb-bild__overlay">
+                            <img src="./bilder/speise.png" alt="speise" width="150px" class="warenkorb__bild">
+                        </div>
+                        <div class="warenkorb-meta">
+                            <h2 class="warenkorb-menu__titel">${name}</h2>
+                            <div class="warenkorb__info">
+                                <p class="warenkorb__preis">${preis}€</p>
+                                <div class="warenkorb__menge">
+                                    <button type="button">-</button>
+                                    <p>${menge}</p>
+                                    <button type="button">+</button>
+                                </div>
+                                
+                            </div>
+                        </div> 
+                    </li>
+                `
+            }).join("")}
+            
+            </ul>`
+        }
+    </script>
+</body>
+</html>
